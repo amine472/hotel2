@@ -1,0 +1,1379 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hôtel El-Nokhba - Système de Gestion Premium</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #1e3c72;
+            --secondary: #2a5298;
+            --accent: #ff6b6b;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --light: #f8f9fa;
+            --dark: #2c3e50;
+            --gradient: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #3498db 100%);
+        }
+
+        body {
+            background: var(--gradient);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Particules de fond */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.1;
+        }
+
+        .particle {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: float 20s infinite linear;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.8; }
+            90% { opacity: 0.8; }
+            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* Page de connexion */
+        #loginPage {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .login-box {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 50px;
+            width: 420px;
+            border-radius: 30px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            animation: fadeInUp 0.8s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hotel-icon {
+            width: 100px;
+            height: 100px;
+            background: var(--gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 40px;
+            color: white;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .login-box h2 {
+            color: var(--dark);
+            margin-bottom: 30px;
+            font-size: 28px;
+            font-weight: 600;
+        }
+
+        .login-box h2 span {
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            font-size: 16px;
+            transition: all 0.3s;
+            direction: ltr;
+        }
+
+        .input-group input:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(30, 60, 114, 0.1);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 16px;
+            background: var(--gradient);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 20px;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(30, 60, 114, 0.4);
+        }
+
+        .error {
+            color: var(--danger);
+            margin-top: 15px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* Page principale */
+        #mainPage {
+            display: none;
+            background: #f0f2f5;
+            min-height: 100vh;
+        }
+
+        /* En-tête */
+        .header {
+            background: var(--gradient);
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .header-left h1 {
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .date-time {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 14px;
+            backdrop-filter: blur(5px);
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            padding: 10px 25px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+            backdrop-filter: blur(5px);
+        }
+
+        .logout-btn:hover {
+            background: white;
+            color: var(--primary);
+            border-color: white;
+        }
+
+        /* Barre d'outils */
+        .toolbar {
+            background: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .search-box {
+            flex: 1;
+            max-width: 400px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 20px 12px 45px;
+            border: 2px solid #e0e0e0;
+            border-radius: 30px;
+            font-size: 15px;
+            transition: all 0.3s;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+        }
+
+        .search-box input:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+
+        .price-control {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: #f8f9fa;
+            padding: 10px 20px;
+            border-radius: 30px;
+        }
+
+        .price-control label {
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .price-control input {
+            width: 120px;
+            padding: 8px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 20px;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--primary);
+            direction: ltr;
+        }
+
+        .price-control input:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+
+        .currency {
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 16px;
+        }
+
+        /* Statistiques */
+        .stats-container {
+            padding: 30px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: var(--gradient);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(30, 60, 114, 0.15);
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            color: white;
+            font-size: 24px;
+        }
+
+        .stat-card h3 {
+            color: #666;
+            font-size: 15px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #999;
+            font-size: 13px;
+        }
+
+        /* Chambres */
+        .rooms-container {
+            padding: 0 30px 30px;
+        }
+
+        .rooms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .room-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .room-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(30, 60, 114, 0.2);
+        }
+
+        .room-header {
+            background: var(--gradient);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .room-number {
+            font-size: 22px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .room-status {
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-available {
+            background: var(--success);
+            color: white;
+        }
+
+        .status-booked {
+            background: var(--danger);
+            color: white;
+        }
+
+        .room-body {
+            padding: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 15px;
+            transition: all 0.3s;
+            direction: ltr;
+        }
+
+        .form-group input:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+
+        .guest-info {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .guest-info p {
+            margin: 10px 0;
+            color: #555;
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px dashed #ddd;
+            padding-bottom: 8px;
+        }
+
+        .guest-info p:last-child {
+            border-bottom: none;
+        }
+
+        .guest-info strong {
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        .guest-info .amount {
+            color: var(--primary);
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s;
+            width: 100%;
+            margin: 5px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: var(--gradient);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(30, 60, 114, 0.3);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #219a52;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background: #e67e22;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            backdrop-filter: blur(5px);
+            animation: fadeIn 0.3s;
+        }
+
+        .modal-content {
+            background: white;
+            width: 90%;
+            max-width: 500px;
+            margin: 50px auto;
+            border-radius: 30px;
+            padding: 30px;
+            position: relative;
+            animation: slideDown 0.4s;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            color: var(--dark);
+            font-size: 24px;
+        }
+
+        .modal-body {
+            margin-bottom: 20px;
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+            transition: color 0.3s;
+        }
+
+        .close-modal:hover {
+            color: var(--danger);
+        }
+
+        /* Alertes */
+        .alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 15px 25px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            display: none;
+            z-index: 3000;
+            animation: slideInRight 0.3s;
+            direction: ltr;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .alert-success {
+            border-right: 4px solid var(--success);
+        }
+
+        .alert-error {
+            border-right: 4px solid var(--danger);
+        }
+
+        .alert-warning {
+            border-right: 4px solid var(--warning);
+        }
+
+        /* Graphique */
+        .chart-container {
+            background: white;
+            padding: 25px;
+            border-radius: 20px;
+            margin: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        .chart-bar {
+            height: 200px;
+            display: flex;
+            align-items: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .bar {
+            flex: 1;
+            background: var(--gradient);
+            border-radius: 10px 10px 0 0;
+            transition: height 0.5s;
+            position: relative;
+            min-height: 20px;
+        }
+
+        .bar::after {
+            content: attr(data-value);
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        /* Impression */
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+        }
+
+        /* Loading */
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .toolbar {
+                flex-direction: column;
+            }
+            
+            .search-box {
+                max-width: 100%;
+            }
+            
+            .rooms-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Particules animées -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Modal de confirmation -->
+    <div class="modal" id="confirmModal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <div class="modal-header">
+                <h2>Confirmation</h2>
+            </div>
+            <div class="modal-body" id="modalMessage">
+                Êtes-vous sûr de vouloir continuer ?
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeModal()">Annuler</button>
+                <button class="btn btn-primary" id="confirmAction">Confirmer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alerte personnalisée -->
+    <div class="alert" id="alert">
+        <span id="alertMessage"></span>
+    </div>
+
+    <!-- Page de connexion -->
+    <div id="loginPage">
+        <div class="login-box">
+            <div class="hotel-icon">
+                <span>🏨</span>
+            </div>
+            <h2>Hôtel <span>El-Nokhba</span></h2>
+            <div class="input-group">
+                <label>Nom d'utilisateur</label>
+                <input type="text" id="username" placeholder="Entrez votre nom" autofocus>
+            </div>
+            <div class="input-group">
+                <label>Mot de passe</label>
+                <input type="password" id="password" placeholder="Entrez votre mot de passe">
+            </div>
+            <button class="login-btn" onclick="login()">
+                <span>Connexion</span>
+            </button>
+            <p class="error" id="errorMsg"></p>
+        </div>
+    </div>
+
+    <!-- Page principale -->
+    <div id="mainPage">
+        <div class="header">
+            <div class="header-left">
+                <h1>
+                    <span>🏨</span>
+                    Hôtel El-Nokhba
+                </h1>
+                <div class="date-time" id="dateTime"></div>
+            </div>
+            <button class="logout-btn" onclick="logout()">
+                <span>🚪</span>
+                Déconnexion
+            </button>
+        </div>
+
+        <div class="toolbar">
+            <div class="search-box">
+                <i>🔍</i>
+                <input type="text" id="searchInput" placeholder="Rechercher une chambre..." onkeyup="searchRooms()">
+            </div>
+            <div class="price-control">
+                <label>Prix/nuit:</label>
+                <input type="number" id="pricePerNight" value="5000" min="1000" step="500" onchange="updatePrice()">
+                <span class="currency">DA</span>
+            </div>
+        </div>
+
+        <div class="stats-container">
+            <div class="stats-grid" id="stats"></div>
+        </div>
+
+        <div class="chart-container">
+            <h3>📊 Occupation des chambres</h3>
+            <div class="chart-bar" id="occupancyChart"></div>
+        </div>
+
+        <div class="rooms-container">
+            <div class="rooms-grid" id="rooms"></div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        const USER = "admin";
+        const PASS = "0000";
+        let pricePerNight = 5000; // 5000 DA par défaut
+
+        // Données des chambres
+        let rooms = JSON.parse(localStorage.getItem("hotelRooms")) || [];
+        
+        // Initialisation des chambres
+        if (rooms.length === 0) {
+            const roomTypes = ["Standard", "Supérieure", "Deluxe", "Suite", "Présidentielle"];
+            for (let i = 1; i <= 20; i++) {
+                const type = roomTypes[Math.floor(Math.random() * roomTypes.length)];
+                rooms.push({
+                    number: i,
+                    type: type,
+                    status: "available",
+                    guest: "",
+                    phone: "",
+                    checkin: "",
+                    checkout: "",
+                    total: 0,
+                    notes: "",
+                    createdAt: new Date().toISOString()
+                });
+            }
+            saveToLocalStorage();
+        }
+
+        // Générer des particules
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                const size = Math.random() * 10 + 2;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Mettre à jour la date et l'heure
+        function updateDateTime() {
+            const now = new Date();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            };
+            document.getElementById('dateTime').textContent = now.toLocaleDateString('fr-FR', options);
+        }
+
+        // Sauvegarder dans localStorage
+        function saveToLocalStorage() {
+            localStorage.setItem("hotelRooms", JSON.stringify(rooms));
+        }
+
+        // Afficher une alerte
+        function showAlert(message, type = "success") {
+            const alert = document.getElementById("alert");
+            const alertMessage = document.getElementById("alertMessage");
+            
+            alert.className = `alert alert-${type}`;
+            alertMessage.textContent = message;
+            alert.style.display = "block";
+            
+            setTimeout(() => {
+                alert.style.display = "none";
+            }, 3000);
+        }
+
+        // Ouvrir le modal
+        let confirmCallback = null;
+        
+        function openModal(message, callback) {
+            document.getElementById('modalMessage').textContent = message;
+            document.getElementById('confirmModal').style.display = 'block';
+            confirmCallback = callback;
+        }
+
+        function closeModal() {
+            document.getElementById('confirmModal').style.display = 'none';
+            confirmCallback = null;
+        }
+
+        document.getElementById('confirmAction').onclick = function() {
+            if (confirmCallback) {
+                confirmCallback();
+            }
+            closeModal();
+        };
+
+        // Connexion
+        function login() {
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+            
+            if (username === USER && password === PASS) {
+                document.getElementById("loginPage").style.display = "none";
+                document.getElementById("mainPage").style.display = "block";
+                renderRooms();
+                updateDateTime();
+                setInterval(updateDateTime, 1000);
+                showAlert("Connexion réussie! Bienvenue à l'Hôtel El-Nokhba", "success");
+            } else {
+                document.getElementById("errorMsg").innerText = "Nom d'utilisateur ou mot de passe incorrect";
+                showAlert("Échec de la connexion", "error");
+            }
+        }
+
+        // Déconnexion
+        function logout() {
+            openModal("Voulez-vous vraiment vous déconnecter?", function() {
+                document.getElementById("loginPage").style.display = "flex";
+                document.getElementById("mainPage").style.display = "none";
+                document.getElementById("username").value = "";
+                document.getElementById("password").value = "";
+                showAlert("Déconnexion réussie", "success");
+            });
+        }
+
+        // Mettre à jour le prix
+        function updatePrice() {
+            pricePerNight = parseInt(document.getElementById('pricePerNight').value) || 5000;
+            showAlert(`Prix par nuit mis à jour: ${pricePerNight.toLocaleString('fr-FR')} DA`, "success");
+        }
+
+        // Calculer le nombre de jours
+        function calculateDays(checkin, checkout) {
+            if (!checkin || !checkout) return 0;
+            const start = new Date(checkin);
+            const end = new Date(checkout);
+            const diffTime = Math.abs(end - start);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            return diffDays;
+        }
+
+        // Formater la date
+        function formatDate(date) {
+            if (!date) return "Non définie";
+            return new Date(date).toLocaleDateString('fr-FR');
+        }
+
+        // Rechercher des chambres
+        function searchRooms() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            renderRooms(searchTerm);
+        }
+
+        // Réserver une chambre
+        function bookRoom(number) {
+            const name = document.getElementById(`name_${number}`)?.value;
+            const phone = document.getElementById(`phone_${number}`)?.value;
+            const checkin = document.getElementById(`checkin_${number}`)?.value;
+            const checkout = document.getElementById(`checkout_${number}`)?.value;
+            
+            if (!name || !phone || !checkin || !checkout) {
+                showAlert("Veuillez remplir tous les champs", "error");
+                return;
+            }
+            
+            const days = calculateDays(checkin, checkout);
+            if (days <= 0) {
+                showAlert("La date de départ doit être après la date d'arrivée", "error");
+                return;
+            }
+            
+            const total = days * pricePerNight;
+            const room = rooms.find(r => r.number === number);
+            
+            openModal(`Confirmer la réservation pour ${name}? Total: ${total.toLocaleString('fr-FR')} DA`, function() {
+                room.status = "booked";
+                room.guest = name;
+                room.phone = phone;
+                room.checkin = checkin;
+                room.checkout = checkout;
+                room.total = total;
+                
+                saveToLocalStorage();
+                renderRooms();
+                showAlert(`Chambre ${number} réservée avec succès`, "success");
+            });
+        }
+
+        // Annuler la réservation
+        function cancelBooking(number) {
+            const room = rooms.find(r => r.number === number);
+            openModal(`Annuler la réservation de ${room.guest}?`, function() {
+                room.status = "available";
+                room.guest = "";
+                room.phone = "";
+                room.checkin = "";
+                room.checkout = "";
+                room.total = 0;
+                room.notes = "";
+                
+                saveToLocalStorage();
+                renderRooms();
+                showAlert(`Réservation annulée pour la chambre ${number}`, "success");
+            });
+        }
+
+        // Prolonger le séjour
+        function extendStay(number) {
+            const room = rooms.find(r => r.number === number);
+            const newCheckout = prompt("Nouvelle date de départ (YYYY-MM-DD):", room.checkout);
+            
+            if (newCheckout) {
+                const days = calculateDays(room.checkin, newCheckout);
+                if (days > 0) {
+                    room.checkout = newCheckout;
+                    room.total = days * pricePerNight;
+                    saveToLocalStorage();
+                    renderRooms();
+                    showAlert(`Séjour prolongé pour la chambre ${number}`, "success");
+                }
+            }
+        }
+
+        // Imprimer la facture
+        function printInvoice(number) {
+            const room = rooms.find(r => r.number === number);
+            const days = calculateDays(room.checkin, room.checkout);
+            
+            const invoiceWindow = window.open("", "_blank");
+            invoiceWindow.document.write(`
+                <html>
+                <head>
+                    <title>Facture - Hôtel El-Nokhba</title>
+                    <style>
+                        body {
+                            font-family: 'Poppins', sans-serif;
+                            padding: 40px;
+                            background: #f0f2f5;
+                        }
+                        .invoice {
+                            max-width: 700px;
+                            margin: 0 auto;
+                            background: white;
+                            padding: 40px;
+                            border-radius: 30px;
+                            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+                        }
+                        .header {
+                            text-align: center;
+                            margin-bottom: 30px;
+                            padding-bottom: 20px;
+                            border-bottom: 2px solid #1e3c72;
+                        }
+                        .header h1 {
+                            color: #1e3c72;
+                            font-size: 32px;
+                            margin-bottom: 10px;
+                        }
+                        .hotel-info {
+                            color: #666;
+                            font-size: 14px;
+                        }
+                        .info {
+                            margin: 20px 0;
+                            padding: 20px;
+                            background: #f8f9fa;
+                            border-radius: 15px;
+                        }
+                        .info p {
+                            margin: 10px 0;
+                            display: flex;
+                            justify-content: space-between;
+                            border-bottom: 1px dashed #ddd;
+                            padding-bottom: 8px;
+                        }
+                        .total {
+                            font-size: 28px;
+                            color: #27ae60;
+                            text-align: center;
+                            margin: 20px 0;
+                            padding: 20px;
+                            background: #e8f5e9;
+                            border-radius: 15px;
+                        }
+                        .footer {
+                            text-align: center;
+                            color: #666;
+                            margin-top: 30px;
+                            font-size: 14px;
+                        }
+                        .watermark {
+                            position: fixed;
+                            opacity: 0.05;
+                            font-size: 100px;
+                            top: 50%;
+                            left: 50%;
+                            transform: translate(-50%, -50%);
+                            pointer-events: none;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="invoice">
+                        <div class="watermark">🏨</div>
+                        <div class="header">
+                            <h1>🏨 Hôtel El-Nokhba</h1>
+                            <div class="hotel-info">23 Rue Didouche Mourad, Alger - Tél: 023 45 67 89</div>
+                        </div>
+                        <div class="info">
+                            <p><strong>N° Facture:</strong> INV-${Date.now()}</p>
+                            <p><strong>Date:</strong> ${new Date().toLocaleDateString('fr-FR')}</p>
+                            <p><strong>Chambre N°:</strong> ${room.number} (${room.type})</p>
+                            <p><strong>Client:</strong> ${room.guest}</p>
+                            <p><strong>Téléphone:</strong> ${room.phone}</p>
+                            <p><strong>Arrivée:</strong> ${formatDate(room.checkin)}</p>
+                            <p><strong>Départ:</strong> ${formatDate(room.checkout)}</p>
+                            <p><strong>Nombre de nuits:</strong> ${days}</p>
+                            <p><strong>Prix par nuit:</strong> ${pricePerNight.toLocaleString('fr-FR')} DA</p>
+                        </div>
+                        <div class="total">
+                            Total à payer: ${room.total.toLocaleString('fr-FR')} DA
+                        </div>
+                        <div class="footer">
+                            <p>Merci de votre confiance</p>
+                            <p>Nous espérons vous revoir bientôt</p>
+                            <p style="margin-top: 20px; font-size: 12px;">Ce document fait office de facture légale</p>
+                        </div>
+                    </div>
+                    <script>
+                        window.onload = function() { window.print(); }
+                    <\/script>
+                </body>
+                </html>
+            `);
+            invoiceWindow.document.close();
+        }
+
+        // Mettre à jour les statistiques
+        function updateStats() {
+            const available = rooms.filter(r => r.status === "available").length;
+            const booked = rooms.filter(r => r.status === "booked").length;
+            const totalRevenue = rooms.reduce((sum, r) => sum + r.total, 0);
+            const occupancyRate = ((booked / rooms.length) * 100).toFixed(1);
+            const averagePrice = rooms.reduce((sum, r) => sum + r.total, 0) / (booked || 1);
+            
+            document.getElementById("stats").innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-icon">🏨</div>
+                    <h3>Chambres Disponibles</h3>
+                    <div class="stat-number">${available}</div>
+                    <div class="stat-label">Sur ${rooms.length} chambres</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📅</div>
+                    <h3>Chambres Réservées</h3>
+                    <div class="stat-number">${booked}</div>
+                    <div class="stat-label">Occupées actuellement</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📊</div>
+                    <h3>Taux d'Occupation</h3>
+                    <div class="stat-number">${occupancyRate}%</div>
+                    <div class="stat-label">Ce mois</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">💰</div>
+                    <h3>Chiffre d'Affaires</h3>
+                    <div class="stat-number">${totalRevenue.toLocaleString('fr-FR')}</div>
+                    <div class="stat-label">Dinars Algériens</div>
+                </div>
+            `;
+
+            // Mettre à jour le graphique
+            updateChart(available, booked);
+        }
+
+        // Mettre à jour le graphique
+        function updateChart(available, booked) {
+            const chart = document.getElementById('occupancyChart');
+            chart.innerHTML = '';
+            
+            const total = available + booked;
+            const availablePercent = (available / total) * 100;
+            const bookedPercent = (booked / total) * 100;
+            
+            chart.innerHTML = `
+                <div class="bar" style="height: ${bookedPercent * 2}px; background: #e74c3c;" data-value="${booked} réservées"></div>
+                <div class="bar" style="height: ${availablePercent * 2}px; background: #27ae60;" data-value="${available} disponibles"></div>
+            `;
+        }
+
+        // Afficher les chambres
+        function renderRooms(searchTerm = "") {
+            const container = document.getElementById("rooms");
+            container.innerHTML = "";
+            
+            const filteredRooms = rooms.filter(room => 
+                room.number.toString().includes(searchTerm) ||
+                room.guest.toLowerCase().includes(searchTerm) ||
+                room.type.toLowerCase().includes(searchTerm)
+            );
+            
+            filteredRooms.sort((a, b) => a.number - b.number).forEach(room => {
+                const roomCard = document.createElement("div");
+                roomCard.className = "room-card";
+                
+                if (room.status === "available") {
+                    const today = new Date().toISOString().split('T')[0];
+                    const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
+                    
+                    roomCard.innerHTML = `
+                        <div class="room-header">
+                            <span class="room-number">
+                                <span>🔑</span>
+                                Chambre ${room.number}
+                            </span>
+                            <span class="room-status status-available">Disponible</span>
+                        </div>
+                        <div class="room-body">
+                            <div class="form-group">
+                                <label>👤 Nom du client</label>
+                                <input type="text" id="name_${room.number}" placeholder="Entrez le nom complet">
+                            </div>
+                            <div class="form-group">
+                                <label>📞 Téléphone</label>
+                                <input type="tel" id="phone_${room.number}" placeholder="05XX XX XX XX">
+                            </div>
+                            <div class="form-group">
+                                <label>📅 Date d'arrivée</label>
+                                <input type="date" id="checkin_${room.number}" value="${today}">
+                            </div>
+                            <div class="form-group">
+                                <label>📅 Date de départ</label>
+                                <input type="date" id="checkout_${room.number}" value="${tomorrow}">
+                            </div>
+                            <div class="form-group">
+                                <label>🏷️ Type de chambre</label>
+                                <input type="text" value="${room.type}" disabled style="background:#f0f0f0">
+                            </div>
+                            <button class="btn btn-primary" onclick="bookRoom(${room.number})">
+                                <span>📝</span>
+                                Réserver maintenant
+                            </button>
+                        </div>
+                    `;
+                } else {
+                    const days = calculateDays(room.checkin, room.checkout);
+                    roomCard.innerHTML = `
+                        <div class="room-header">
+                            <span class="room-number">
+                                <span>🔒</span>
+                                Chambre ${room.number}
+                            </span>
+                            <span class="room-status status-booked">Réservée</span>
+                        </div>
+                        <div class="room-body">
+                            <div class="guest-info">
+                                <p>
+                                    <strong>👤 Client:</strong>
+                                    <span>${room.guest}</span>
+                                </p>
+                                <p>
+                                    <strong>📞 Téléphone:</strong>
+                                    <span>${room.phone}</span>
+                                </p>
+                                <p>
+                                    <strong>🏷️ Type:</strong>
+                                    <span>${room.type}</span>
+                                </p>
+                                <p>
+                                    <strong>📅 Arrivée:</strong>
+                                    <span>${formatDate(room.checkin)}</span>
+                                </p>
+                                <p>
+                                    <strong>📅 Départ:</strong>
+                                    <span>${formatDate(room.checkout)}</span>
+                                </p>
+                                <p>
+                                    <strong>⏱️ Nuits:</strong>
+                                    <span>${days}</span>
+                                </p>
+                                <p>
+                                    <strong>💰 Total:</strong>
+                                    <span class="amount">${room.total.toLocaleString('fr-FR')} DA</span>
+                                </p>
+                            </div>
+                            <button class="btn btn-success" onclick="printInvoice(${room.number})">
+                                <span>🖨️</span>
+                                Imprimer facture
+                            </button>
+                            <button class="btn btn-warning" onclick="extendStay(${room.number})">
+                                <span>⏰</span>
+                                Prolonger séjour
+                            </button>
+                            <button class="btn btn-danger" onclick="cancelBooking(${room.number})">
+                                <span>❌</span>
+                                Annuler réservation
+                            </button>
+                        </div>
+                    `;
+                }
+                
+                container.appendChild(roomCard);
+            });
+            
+            updateStats();
+        }
+
+        // Initialisation
+        window.onload = function() {
+            createParticles();
+            renderRooms();
+            updateDateTime();
+            setInterval(updateDateTime, 1000);
+        };
+    </script>
+</body>
+</html>
